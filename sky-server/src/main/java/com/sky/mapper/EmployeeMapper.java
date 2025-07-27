@@ -34,7 +34,6 @@ public interface EmployeeMapper {
      * @param employeePageQueryDTO
      * @return
      */
-    @Select("select * from employee where name like concat('%',#{name},'%')")
     Page<Employee> page(EmployeePageQueryDTO employeePageQueryDTO);
 
     /**
