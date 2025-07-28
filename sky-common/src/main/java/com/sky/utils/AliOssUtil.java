@@ -1,13 +1,18 @@
 package com.sky.utils;
 
-import com.aliyun.oss.ClientException;
-import com.aliyun.oss.OSS;
-import com.aliyun.oss.OSSClientBuilder;
-import com.aliyun.oss.OSSException;
+import com.aliyun.oss.*;
+import com.aliyun.oss.common.auth.CredentialsProviderFactory;
+import com.aliyun.oss.common.auth.EnvironmentVariableCredentialsProvider;
+import com.aliyun.oss.common.comm.SignVersion;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.ByteArrayInputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -26,10 +31,16 @@ public class AliOssUtil {
      * @param objectName
      * @return
      */
-    public String upload(byte[] bytes, String objectName) {
+    public String upload(byte[] bytes, String objectName) throws com.aliyuncs.exceptions.ClientException {
+        // 生成上传文件的目录与名称
+        objectName = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM"))
+                + "/"
+                + UUID.randomUUID().toString()
+                + objectName.substring(objectName.lastIndexOf("."));
 
-        // 创建OSSClient实例。
+         //创建OSSClient实例。
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+
 
         try {
             // 创建PutObject请求。
