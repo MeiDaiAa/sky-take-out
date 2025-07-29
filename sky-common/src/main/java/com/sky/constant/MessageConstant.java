@@ -25,4 +25,7 @@ public class MessageConstant {
     public static final String ORDER_STATUS_ERROR = "订单状态错误";
     public static final String ORDER_NOT_FOUND = "订单不存在";
 
+
+    public static final String NO_ITEMS_TO_DELETE = "请选择删除对象";
+
 }

@@ -18,4 +18,6 @@ public interface DishService {
     DishVO getByIdWithFlavors(Long id);
 
     void updateWithFlavors(DishDTO dishDTO);
+
+    List<DishVO> getByCategoryId(Long categoryId);
 }
