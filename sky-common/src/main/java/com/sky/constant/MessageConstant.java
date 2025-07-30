@@ -27,5 +27,6 @@ public class MessageConstant {
 
 
     public static final String NO_ITEMS_TO_DELETE = "请选择删除对象";
+    public static final String SHOP_STATUS_ERROR = "营业状态异常";
 
 }

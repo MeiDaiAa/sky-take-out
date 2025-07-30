@@ -9,3 +9,9 @@ sky:
   alioss:
     bucket-name: medeah-sky-take-out
     endpoint: oss-cn-beijing.aliyuncs.com
+  spring:
+    redis:
+      password: 123456
+      port: 6379
+      host: localhost
+      database: 0
