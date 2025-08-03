@@ -37,7 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * 新增分类
-     * @param categoryDTO
+     * @param categoryDTO 分类数据
      */
     public void save(CategoryDTO categoryDTO) {
         Category category = new Category();
@@ -58,8 +58,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * 分页查询
-     * @param categoryPageQueryDTO
-     * @return
+     * @param categoryPageQueryDTO 分类查询数据
+     * @return PageResult
      */
     public PageResult pageQuery(CategoryPageQueryDTO categoryPageQueryDTO) {
         PageHelper.startPage(categoryPageQueryDTO.getPage(),categoryPageQueryDTO.getPageSize());
@@ -70,7 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * 根据id删除分类
-     * @param id
+     * @param id 分类id
      */
     public void deleteById(Long id) {
         //查询当前分类是否关联了菜品，如果关联了就抛出业务异常
@@ -93,7 +93,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * 修改分类
-     * @param categoryDTO
+     * @param categoryDTO 分类数据
      */
     public void update(CategoryDTO categoryDTO) {
         Category category = new Category();
@@ -108,8 +108,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * 启用、禁用分类
-     * @param status
-     * @param id
+     * @param status 状态 1启用 0禁用
+     * @param id 分类id
      */
     public void startOrStop(Integer status, Long id) {
         Category category = Category.builder()
@@ -123,8 +123,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     /**
      * 根据类型查询分类
-     * @param type
-     * @return
+     * @param type 1 菜品分类 2 套餐分类
+     * @return 菜品分类或套餐分类
      */
     public List<Category> list(Integer type) {
         return categoryMapper.list(type);

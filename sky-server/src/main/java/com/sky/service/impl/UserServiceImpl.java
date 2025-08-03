@@ -14,7 +14,6 @@ import com.sky.service.UserService;
 import com.sky.utils.HttpClientUtil;
 import com.sky.utils.JwtUtil;
 import com.sky.vo.UserLoginVO;
-import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,9 +33,11 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     @Autowired
     private JwtProperties jwtProperties;
+
     /**
-     * 用户登录
-     * @return
+     * 微信登录
+     * @param userLoginDTO 微信登录信息
+     * @return UserLoginVO
      */
     @Override
     public UserLoginVO login(UserLoginDTO userLoginDTO) {
@@ -81,8 +82,8 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 获取微信用户的openid
-     * @param userLoginDTO
-     * @return
+     * @param userLoginDTO 登录时传递的参数
+     * @return 微信用户的openid
      */
     private String getOpenid(UserLoginDTO userLoginDTO) {
         Map<String, String> map = new HashMap<>();

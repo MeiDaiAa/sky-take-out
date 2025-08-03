@@ -10,14 +10,14 @@ public interface CategoryService {
 
     /**
      * 新增分类
-     * @param categoryDTO
+     * @param categoryDTO 分类DTO
      */
     void save(CategoryDTO categoryDTO);
 
     /**
      * 分页查询
-     * @param categoryPageQueryDTO
-     * @return
+     * @param categoryPageQueryDTO 分类分页查询DTO
+     * @return PageResult
      */
     PageResult pageQuery(CategoryPageQueryDTO categoryPageQueryDTO);
 
@@ -29,21 +29,21 @@ public interface CategoryService {
 
     /**
      * 修改分类
-     * @param categoryDTO
+     * @param categoryDTO 分类DTO
      */
     void update(CategoryDTO categoryDTO);
 
     /**
      * 启用、禁用分类
-     * @param status
-     * @param id
+     * @param status 状态 1启用 0禁用
+     * @param id 分类id
      */
     void startOrStop(Integer status, Long id);
 
     /**
      * 根据类型查询分类
-     * @param type
-     * @return
+     * @param type 分类类型 1菜品分类  2套餐分类
+     * @return 分类对象列表 List<Category>
      */
     List<Category> list(Integer type);
 }

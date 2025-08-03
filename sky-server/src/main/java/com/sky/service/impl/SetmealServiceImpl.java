@@ -40,8 +40,8 @@ public class SetmealServiceImpl implements SetmealService {
 
     /**
      * 套餐分页查询
-     * @param setmealPageQueryDTO
-     * @return
+     * @param setmealPageQueryDTO 套餐查询参数
+     * @return PageResult
      */
     @Override
     public PageResult pageQuery(SetmealPageQueryDTO setmealPageQueryDTO) {
@@ -54,7 +54,7 @@ public class SetmealServiceImpl implements SetmealService {
 
     /**
      * 新增套餐
-     * @param setmealDTO
+     * @param setmealDTO 套餐数据
      */
     @Override
     @Transactional // 开启事务
@@ -102,8 +102,8 @@ public class SetmealServiceImpl implements SetmealService {
 
     /**
      * 根据id查询套餐数据
-     * @param id
-     * @return
+     * @param id 套餐id
+     * @return SetmealVO
      */
     @Override
     public SetmealVO getByIdWithSetmealDish(Long id) {
@@ -120,8 +120,8 @@ public class SetmealServiceImpl implements SetmealService {
 
     /**
      * 套餐启售停售
-     * @param status
-     * @param id
+     * @param status 状态 1起售 0停售
+     * @param id 套餐id
      */
     @Override
     public void startOrStop(Integer status, Long id) {
@@ -134,7 +134,7 @@ public class SetmealServiceImpl implements SetmealService {
 
     /**
      * 批量删除套餐
-     * @param ids
+     * @param ids 套餐id数组
      */
     @Override
     public void deleteByIdsWithSetmealDish(List<Long> ids) {
@@ -160,7 +160,7 @@ public class SetmealServiceImpl implements SetmealService {
 
     /**
      * 修改套餐
-     * @param setmealDTO
+     * @param setmealDTO 套餐数据
      */
     @Override
     @Transactional
@@ -190,18 +190,17 @@ public class SetmealServiceImpl implements SetmealService {
 
     /**
      * 条件查询
-     * @param setmeal
-     * @return
+     * @param setmeal 套餐数据
+     * @return 符合条件的套餐数据 List<Setmeal>
      */
     public List<Setmeal> list(Setmeal setmeal) {
-        List<Setmeal> list = setmealMapper.list(setmeal);
-        return list;
+        return setmealMapper.list(setmeal);
     }
 
     /**
      * 根据id查询菜品选项
-     * @param id
-     * @return
+     * @param id 套餐id
+     * @return List<DishItemVO>
      */
     public List<DishItemVO> getDishItemById(Long id) {
         return setmealMapper.getDishItemBySetmealId(id);

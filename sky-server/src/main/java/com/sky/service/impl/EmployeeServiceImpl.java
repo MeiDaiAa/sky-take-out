@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -32,8 +33,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 员工登录
-     * @param employeeLoginDTO
-     * @return
+     * @param employeeLoginDTO 员工登录信息
+     * @return Employee
      */
     public Employee login(EmployeeLoginDTO employeeLoginDTO) {
         String username = employeeLoginDTO.getUsername();
@@ -56,7 +57,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
         }
 
-        if (employee.getStatus() == StatusConstant.DISABLE) {
+        if (Objects.equals(employee.getStatus(), StatusConstant.DISABLE)) {
             //账号被锁定
             throw new AccountLockedException(MessageConstant.ACCOUNT_LOCKED);
         }
@@ -67,8 +68,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 新增员工
-     * @param employeeDTO
-     * @return
+     * @param employeeDTO 员工数据
      */
     @Override
     public void add(EmployeeDTO employeeDTO) {
@@ -90,8 +90,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 分页查询
-     * @param employeePageQueryDTO
-     * @return
+     * @param employeePageQueryDTO 分页查询参数
+     * @return PageResult
      */
     @Override
     public PageResult page(EmployeePageQueryDTO employeePageQueryDTO) {
@@ -107,8 +107,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 启用禁用员工账号
-     * @param status
-     * @param id
+     * @param status 状态 1启用 0禁用
+     * @param id 员工id
      */
     @Override
     public void changeStatus(Integer status, Long id) {
@@ -123,8 +123,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 根据id查询员工信息
-     * @param id
-     * @return
+     * @param id 员工id
+     * @return Employee
      */
     @Override
     public Employee getById(Long id) {
@@ -133,7 +133,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * 编辑员工信息
-     * @param employeeDTO
+     * @param employeeDTO 员工信息
      */
     @Override
     public void update(EmployeeDTO employeeDTO) {

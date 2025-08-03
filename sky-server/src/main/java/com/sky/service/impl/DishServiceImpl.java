@@ -40,7 +40,7 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 新增菜品
-     * @param dishDTO
+     * @param dishDTO 菜品数据
      */
     @Override
     public void saveWithFlavors(DishDTO dishDTO) {
@@ -64,8 +64,8 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 菜品分页查询
-     * @param dishPageQueryDTO
-     * @return
+     * @param dishPageQueryDTO 菜品查询参数
+     * @return PageResult
      */
     @Override
     public PageResult pageQuery(DishPageQueryDTO dishPageQueryDTO) {
@@ -78,7 +78,7 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 批量删除
-     * @param ids
+     * @param ids 菜品id数组
      */
     @Override
     public void deleteByIdsWithFlavors(List<Long> ids) {
@@ -105,8 +105,8 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 根据id查询
-     * @param id
-     * @return
+     * @param id 菜品id
+     * @return DishVO
      */
     @Override
     public DishVO getByIdWithFlavors(Long id) {
@@ -128,7 +128,7 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 修改菜品及对应的口味数据
-     * @param dishDTO
+     * @param dishDTO 菜品数据
      */
     @Override
     @Transactional //开启事务
@@ -157,8 +157,8 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 根据分类id查询菜品数据
-     * @param categoryId
-     * @return
+     * @param categoryId 分类id
+     * @return List<DishVO>
      */
     @Override
     public List<DishVO> getByCategoryId(Long categoryId) {
@@ -168,8 +168,8 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 条件查询菜品和口味
-     * @param dish
-     * @return
+     * @param dish 菜品对象
+     * @return List<DishVO>
      */
     public List<DishVO> listWithFlavor(Dish dish) {
         List<Dish> dishList = dishMapper.list(dish);
@@ -192,8 +192,8 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 菜品起售、停售
-     * @param status
-     * @param id
+     * @param status 状态 1起售 0停售
+     * @param id 菜品id
      */
     @Override
     public void startOrStop(Integer status, Long id) {
