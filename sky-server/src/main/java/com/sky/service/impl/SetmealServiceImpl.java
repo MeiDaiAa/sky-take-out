@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -93,9 +92,7 @@ public class SetmealServiceImpl implements SetmealService {
         //插入套餐和菜品的关联数据
         Long SetmealId = setmeal.getId();
         if(setmealDishes != null && !setmealDishes.isEmpty()){
-            setmealDishes.forEach(setmealDish -> {
-                setmealDish.setSetmealId(SetmealId);
-            });
+            setmealDishes.forEach(setmealDish -> setmealDish.setSetmealId(SetmealId));
             setmealMapper.insertBatch(setmealDishes);
         }
     }
