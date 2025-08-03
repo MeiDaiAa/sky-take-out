@@ -26,6 +26,11 @@ public class CommonController {
     @Autowired
     AliOssUtil aliOssUtil;
 
+    /**
+     * 文件上传
+     * @param file 文件
+     * @return 文件上传后的访问地址
+     */
     @PostMapping("/upload")
     @ApiOperation("文件上传")
     public Result<String> upload(MultipartFile file) throws IOException, ClientException {

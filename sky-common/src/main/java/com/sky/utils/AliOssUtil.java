@@ -27,9 +27,9 @@ public class AliOssUtil {
     /**
      * 文件上传
      *
-     * @param bytes
-     * @param objectName
-     * @return
+     * @param bytes 文件字节数组
+     * @param objectName 文件名
+     * @return 文件访问路径
      */
     public String upload(byte[] bytes, String objectName) throws com.aliyuncs.exceptions.ClientException {
         // 生成上传文件的目录与名称

@@ -28,8 +28,8 @@ public class DishController {
     /**
      * 根据分类id查询菜品
      *
-     * @param categoryId
-     * @return
+     * @param categoryId 分类id
+     * @return Result<List<DishVO>>
      */
     @GetMapping("/list")
     @ApiOperation("根据分类id查询菜品")

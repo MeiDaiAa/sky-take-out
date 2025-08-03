@@ -23,8 +23,8 @@ public class UserController {
 
     /**
      * 用户登录
-     * @param userLoginDTO
-     * @return
+     * @param userLoginDTO 用户登录信息
+     * @return Result<UserLoginVO>
      */
     @PostMapping("/login")
     @ApiOperation("用户登录")

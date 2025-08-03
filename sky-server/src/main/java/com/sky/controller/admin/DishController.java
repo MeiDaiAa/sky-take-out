@@ -27,14 +27,14 @@ public class DishController {
 
     /**
      * 添加菜品
-     * @param dishDTO
-     * @return
+     * @param dishDTO 菜品参数
+     * @return Result<Void>
      */
     @PostMapping
     @ApiOperation("添加菜品")
     //为何添加也要删除缓存：添加菜品时，该分类下的缓存并没有当前需要添加菜品的缓存数据，所以要删除缓存，重新生成含有当前菜品的缓存数据
     @CacheEvict(cacheNames = "dishCache", key = "#dishDTO.categoryId")
-    public Result save(@RequestBody DishDTO dishDTO) {
+    public Result<Void> save(@RequestBody DishDTO dishDTO) {
         log.info("添加菜品: {}", dishDTO);
         dishService.saveWithFlavors(dishDTO);
 
@@ -43,8 +43,8 @@ public class DishController {
 
     /**
      * 菜品分页查询
-     * @param dishPageQueryDTO
-     * @return
+     * @param dishPageQueryDTO 菜品查询参数
+     * @return Result<PageResult>
      */
     @GetMapping("/page")
     @ApiOperation("菜品分页查询")
@@ -58,13 +58,13 @@ public class DishController {
 
     /**
      * 批量删除
-     * @param ids
-     * @return
+     * @param ids 需要删除的菜品id数组
+     * @return Result<Void>
      */
     @DeleteMapping
     @ApiOperation("批量删除")
     @CacheEvict(cacheNames = "dishCache", allEntries = true)
-    public Result delete(@RequestParam List<Long> ids){
+    public Result<Void> delete(@RequestParam List<Long> ids){
         log.info("批量删除菜品：{}", ids);
 
         dishService.deleteByIdsWithFlavors(ids);
@@ -74,8 +74,8 @@ public class DishController {
 
     /**
      * 根据id查询
-     * @param id
-     * @return
+     * @param id  菜品id
+     * @return Result<DishVo>
      */
     @GetMapping("/{id}")
     @ApiOperation("根据id查询")
@@ -87,13 +87,13 @@ public class DishController {
 
     /**
      * 修改菜品
-     * @param dishDTO
-     * @return
+     * @param dishDTO 修改的菜品数据
+     * @return Result<Void>
      */
     @PutMapping
     @ApiOperation("修改菜品")
     @CacheEvict(cacheNames = "dishCache", key = "#dishDTO.categoryId")
-    public Result update(@RequestBody DishDTO dishDTO){
+    public Result<Void> update(@RequestBody DishDTO dishDTO){
         log.info("修改菜品：{}", dishDTO);
 
         dishService.updateWithFlavors(dishDTO);
@@ -104,8 +104,8 @@ public class DishController {
 
     /**
      * 根据分类id查询菜品
-     * @param categoryId
-     * @return
+     * @param categoryId 分类id
+     * @return Result<List<DishVO>>
      */
     @GetMapping("/list")
     @ApiOperation("根据分类id查询菜品")
@@ -118,9 +118,15 @@ public class DishController {
     }
 
 
+    /**
+     * 菜品起售停售
+     * @param status 状态：1起售 0停售
+     * @param id 菜品id
+     * @return Result<Void>
+     */
     @PostMapping("/status/{status}")
     @CacheEvict(cacheNames = "dishCache", allEntries = true)
-    public Result startOrStop(@PathVariable Integer status, Long id) {
+    public Result<Void> startOrStop(@PathVariable Integer status, Long id) {
         log.info("起售或停售菜品：{}", id);
 
         dishService.startOrStop(status, id);

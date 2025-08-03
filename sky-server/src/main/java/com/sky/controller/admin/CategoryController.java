@@ -27,12 +27,12 @@ public class CategoryController {
 
     /**
      * 新增分类
-     * @param categoryDTO
-     * @return
+     * @param categoryDTO 分类DTO
+     * @return  Result<Void>
      */
     @PostMapping
     @ApiOperation("新增分类")
-    public Result<String> save(@RequestBody CategoryDTO categoryDTO){
+    public Result<Void> save(@RequestBody CategoryDTO categoryDTO){
         log.info("新增分类：{}", categoryDTO);
         categoryService.save(categoryDTO);
         return Result.success();
@@ -40,8 +40,8 @@ public class CategoryController {
 
     /**
      * 分类分页查询
-     * @param categoryPageQueryDTO
-     * @return
+     * @param categoryPageQueryDTO 分类分页查询参数
+     * @return  Result<PageResult>
      */
     @GetMapping("/page")
     @ApiOperation("分类分页查询")
@@ -53,12 +53,12 @@ public class CategoryController {
 
     /**
      * 删除分类
-     * @param id
-     * @return
+     * @param id 分类id
+     * @return  Result<Void>
      */
     @DeleteMapping
     @ApiOperation("删除分类")
-    public Result<String> deleteById(Long id){
+    public Result<Void> deleteById(Long id){
         log.info("删除分类：{}", id);
         categoryService.deleteById(id);
         return Result.success();
@@ -66,33 +66,33 @@ public class CategoryController {
 
     /**
      * 修改分类
-     * @param categoryDTO
-     * @return
+     * @param categoryDTO 分类DTO
+     * @return  Result<Void>
      */
     @PutMapping
     @ApiOperation("修改分类")
-    public Result<String> update(@RequestBody CategoryDTO categoryDTO){
+    public Result<Void> update(@RequestBody CategoryDTO categoryDTO){
         categoryService.update(categoryDTO);
         return Result.success();
     }
 
     /**
      * 启用、禁用分类
-     * @param status
-     * @param id
-     * @return
+     * @param status 状态 1启用 0禁用
+     * @param id 分类id
+     * @return Result<Void>
      */
     @PostMapping("/status/{status}")
     @ApiOperation("启用禁用分类")
-    public Result<String> startOrStop(@PathVariable("status") Integer status, Long id){
+    public Result<Void> startOrStop(@PathVariable("status") Integer status, Long id){
         categoryService.startOrStop(status,id);
         return Result.success();
     }
 
     /**
      * 根据类型查询分类
-     * @param type
-     * @return
+     * @param type 分类类型
+     * @return Result<List<Category>>
      */
     @GetMapping("/list")
     @ApiOperation("根据类型查询分类")

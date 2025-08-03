@@ -25,8 +25,8 @@ public class SetmealController {
 
     /**
      * 分页查询
-     * @param setmealPageQueryDTO
-     * @return
+     * @param setmealPageQueryDTO 套餐分页参数
+     * @return Result<PageResult>
      */
     @GetMapping("/page")
     @ApiOperation("分页查询")
@@ -38,13 +38,13 @@ public class SetmealController {
 
     /**
      * 新增套餐
-     * @param setmealDTO
-     * @return
+     * @param setmealDTO 套餐数据
+     * @return Result<Void>
      */
     @PostMapping
     @ApiOperation("新增套餐")
     @CacheEvict(cacheNames = "setmealCache", key = "#setmealDTO.categoryId")
-    public Result save(@RequestBody SetmealDTO setmealDTO){
+    public Result<Void> save(@RequestBody SetmealDTO setmealDTO){
         log.info("新增套餐: {}", setmealDTO);
 
         setmealService.saveWithSetmealDish(setmealDTO);
@@ -54,8 +54,8 @@ public class SetmealController {
 
     /**
      * 根据id查询
-     * @param id
-     * @return
+     * @param id  套餐id
+     * @return Result<SetmealVO>
      */
     @GetMapping("/{id}")
     @ApiOperation("根据id查询")
@@ -68,14 +68,14 @@ public class SetmealController {
 
     /**
      * 套餐启售停售
-     * @param status
-     * @param id
-     * @return
+     * @param status 状态 1起售 0停售
+     * @param id 套餐id
+     * @return Result<Void>
      */
     @PostMapping("/status/{status}")
     @ApiOperation("套餐起售、停售")
     @CacheEvict(cacheNames = "setmealCache", allEntries = true)
-    public Result startOrStop(@PathVariable Integer status, Long id){
+    public Result<Void> startOrStop(@PathVariable Integer status, Long id){
         log.info("套餐: {} ,起售、停售: {}", status, id);
         setmealService.startOrStop(status,id);
         return Result.success();
@@ -83,13 +83,13 @@ public class SetmealController {
 
     /**
      * 批量删除套餐
-     * @param ids
-     * @return
+     * @param ids 套餐id
+     * @return Result<Void>
      */
     @DeleteMapping
     @ApiOperation("批量删除套餐")
     @CacheEvict(cacheNames = "setmealCache", allEntries = true)
-    public Result delete(@RequestParam List<Long> ids){
+    public Result<Void> delete(@RequestParam List<Long> ids){
         log.info("批量删除套餐: {}", ids);
 
         setmealService.deleteByIdsWithSetmealDish(ids);
@@ -99,13 +99,13 @@ public class SetmealController {
 
     /**
      * 修改套餐
-     * @param setmealDTO
-     * @return
+     * @param setmealDTO 套餐数据
+     * @return Result<Void>
      */
     @PutMapping
     @ApiOperation("修改套餐")
     @CacheEvict(cacheNames = "setmealCache", key = "#setmealDTO.categoryId")
-    public Result update(@RequestBody SetmealDTO setmealDTO){
+    public Result<Void> update(@RequestBody SetmealDTO setmealDTO){
         log.info("修改套餐: {}", setmealDTO);
 
         setmealService.updateWithSetmealDish(setmealDTO);

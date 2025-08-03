@@ -38,9 +38,8 @@ public class EmployeeController {
 
     /**
      * 登录
-     *
-     * @param employeeLoginDTO
-     * @return
+     * @param employeeLoginDTO 员工登录信息
+     * @return Result<EmployeeLoginVO>
      */
     @PostMapping("/login")
     @ApiOperation("员工登录")
@@ -69,23 +68,22 @@ public class EmployeeController {
 
     /**
      * 退出
-     *
-     * @return
+     * @return  Result<Void>
      */
     @ApiOperation("员工退出")
     @PostMapping("/logout")
-    public Result<String> logout() {
+    public Result<Void> logout() {
         return Result.success();
     }
 
     /**
      * 新增员工
-     * @param employeeDTO
-     * @return
+     * @param employeeDTO 员工信息
+     * @return  Result<Void>
      */
     @PostMapping
     @ApiOperation("新增员工")
-    public Result add(@RequestBody EmployeeDTO employeeDTO){
+    public Result<Void> add(@RequestBody EmployeeDTO employeeDTO){
         log.info("新增员工，员工数据：{}", employeeDTO);
 
         employeeService.add(employeeDTO);
@@ -95,8 +93,8 @@ public class EmployeeController {
 
     /**
      * 分页查询
-     * @param employeePageQueryDTO
-     * @return
+     * @param employeePageQueryDTO 员工查询参数
+     * @return  Result<PageResult>
      */
     @GetMapping("/page")
     @ApiOperation("分页查询")
@@ -110,13 +108,13 @@ public class EmployeeController {
 
     /**
      * 启用禁用员工账号
-     * @param status
-     * @param id
-     * @return
+     * @param status 状态 1启用 0禁用
+     * @param id 员工id
+     * @return Result<Void>
      */
     @PostMapping("status/{status}")
     @ApiOperation("员工状态启用禁用")
-    public Result changeStatus(@PathVariable Integer status, Long id){
+    public Result<Void> changeStatus(@PathVariable Integer status, Long id){
         log.info("员工状态启用禁用：{}, id：{}", status, id);
 
         employeeService.changeStatus(status, id);
@@ -127,8 +125,8 @@ public class EmployeeController {
 
     /**
      * 根据id查询员工信息
-     * @param id
-     * @return
+     * @param id 员工id
+     * @return  Result<Employee>
      */
     @GetMapping("/{id}")
     @ApiOperation("根据id查询员工信息")
@@ -142,12 +140,12 @@ public class EmployeeController {
 
     /**
      * 编辑员工信息
-     * @param employeeDTO
-     * @return
+     * @param employeeDTO 员工数据
+     * @return Result<Void>
      */
     @PutMapping
     @ApiOperation("编辑员工信息")
-    public Result update(@RequestBody EmployeeDTO employeeDTO){
+    public Result<Void> update(@RequestBody EmployeeDTO employeeDTO){
         log.info("编辑员工信息：{}", employeeDTO);
 
         employeeService.update(employeeDTO);
