@@ -12,8 +12,10 @@ public class OssConfiguration {
     @Bean
     public AliOssUtil aliOssUtil(AliOssProperties aliOssProperties){
         return new AliOssUtil(aliOssProperties.getEndpoint(),
-                System.getenv("OSS_ACCESS_KEY_ID"),//获取环境变量
-                System.getenv("OSS_ACCESS_KEY_SECRET"),
-                aliOssProperties.getBucketName());
+                    aliOssProperties.getAccessKeyId(),
+                    aliOssProperties.getAccessKeySecret(),
+//                  System.getenv("OSS_ACCESS_KEY_ID"),//获取环境变量
+//                  System.getenv("OSS_ACCESS_KEY_SECRET"),
+                    aliOssProperties.getBucketName());
     }
 }
