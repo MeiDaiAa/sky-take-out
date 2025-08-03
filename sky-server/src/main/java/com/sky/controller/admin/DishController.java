@@ -10,6 +10,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +32,8 @@ public class DishController {
      */
     @PostMapping
     @ApiOperation("添加菜品")
+    //为何添加也要删除缓存：添加菜品时，该分类下的缓存并没有当前需要添加菜品的缓存数据，所以要删除缓存，重新生成含有当前菜品的缓存数据
+    @CacheEvict(cacheNames = "dishCache", key = "#dishDTO.categoryId")
     public Result save(@RequestBody DishDTO dishDTO) {
         log.info("添加菜品: {}", dishDTO);
         dishService.saveWithFlavors(dishDTO);
@@ -59,6 +63,7 @@ public class DishController {
      */
     @DeleteMapping
     @ApiOperation("批量删除")
+    @CacheEvict(cacheNames = "dishCache", allEntries = true)
     public Result delete(@RequestParam List<Long> ids){
         log.info("批量删除菜品：{}", ids);
 
@@ -87,6 +92,7 @@ public class DishController {
      */
     @PutMapping
     @ApiOperation("修改菜品")
+    @CacheEvict(cacheNames = "dishCache", key = "#dishDTO.categoryId")
     public Result update(@RequestBody DishDTO dishDTO){
         log.info("修改菜品：{}", dishDTO);
 
