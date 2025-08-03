@@ -117,4 +117,14 @@ public class DishController {
         return Result.success(dishVOs);
     }
 
+
+    @PostMapping("/status/{status}")
+    @CacheEvict(cacheNames = "dishCache", allEntries = true)
+    public Result startOrStop(@PathVariable Integer status, Long id) {
+        log.info("起售或停售菜品：{}", id);
+
+        dishService.startOrStop(status, id);
+
+        return Result.success();
+    }
 }
