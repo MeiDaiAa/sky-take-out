@@ -40,7 +40,6 @@ public class SetmealController {
 
         List<Setmeal> list = setmealService.list(setmeal);
 
-        log.info("list:{}", list);
         return Result.success(list);
     }
 
