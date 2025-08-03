@@ -5,6 +5,7 @@ import com.sky.entity.ShoppingCart;
 import com.sky.enumeration.OperationType;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -32,4 +33,12 @@ public interface ShoppingCartMapper {
      * @param shoppingCart 购物车对象数据
      */
     void update(ShoppingCart shoppingCart);
+
+    /**
+     * 根据用户id查询
+     * @param userId 用户id
+     * @return List<ShoppingCart>
+     */
+    @Select("select * from shopping_cart where user_id = #{userId}")
+    List<ShoppingCart> getByUserId(Long userId);
 }

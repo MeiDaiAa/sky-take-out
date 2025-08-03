@@ -65,4 +65,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             shoppingCartMapper.insert(shoppingCart);
         }
     }
+
+    /**
+     * 查看购物车
+     * @return List<ShoppingCart>
+     */
+    @Override
+    public List<ShoppingCart> list() {
+        return shoppingCartMapper.getByUserId(BaseContext.getCurrentId());
+    }
 }

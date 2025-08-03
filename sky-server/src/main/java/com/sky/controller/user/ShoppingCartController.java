@@ -1,16 +1,17 @@
 package com.sky.controller.user;
 
+import com.sky.context.BaseContext;
 import com.sky.dto.ShoppingCartDTO;
+import com.sky.entity.ShoppingCart;
 import com.sky.result.Result;
 import com.sky.service.ShoppingCartService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user/shoppingCart")
@@ -33,5 +34,13 @@ public class ShoppingCartController {
         shoppingCartService.add(shoppingCartDTO);
 
         return Result.success();
+    }
+
+    @GetMapping("/list")
+    @ApiOperation("查看购物车")
+    public Result<List<ShoppingCart>> list(){
+        log.info("用户查看购物车，用户id:{}", BaseContext.getCurrentId());
+
+        return Result.success(shoppingCartService.list());
     }
 }
