@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -224,5 +225,37 @@ public class OrderServiceImpl implements OrderService {
         orders.setStatus(Orders.CANCELLED);
 
         orderMapper.update(orders);
+    }
+
+    /**
+     * 再来一单
+     * @param id 订单id
+     */
+    @Override
+    public void repetition(Long id) {
+        // 查询当前订单
+        OrderVO orderVO = orderMapper.getByIdWithOrderDetail(id);
+
+        //构建新的订单数据
+        OrdersSubmitDTO ordersSubmitDTO = new OrdersSubmitDTO();
+        BeanUtils.copyProperties(orderVO, ordersSubmitDTO);
+        //设置下单时间为当前时间+1小时
+        ordersSubmitDTO.setEstimatedDeliveryTime(LocalDateTime.now().plusHours(1));
+
+        //将订单数据中的订单详情数据转换成购物车数据
+        Long userId = BaseContext.getCurrentId();
+
+        List<OrderDetail> orderDetailList = orderVO.getOrderDetailList();//订单详情数据
+        List<ShoppingCart> shoppingCartList = orderDetailList.stream().map(orderDetail -> {
+            ShoppingCart shoppingCart = new ShoppingCart();
+            BeanUtils.copyProperties(orderDetail, shoppingCart);
+            shoppingCart.setUserId(userId);
+            shoppingCart.setCreateTime(LocalDateTime.now());
+            return shoppingCart;
+        }).collect(Collectors.toList());//创建购物车数据
+        shoppingCartMapper.insertBatch(shoppingCartList);
+
+        // 调用保存订单
+        submit(ordersSubmitDTO);
     }
 }
