@@ -49,4 +49,6 @@ public interface OrderMapper {
      * @return Page<OrderVO>
      */
     Page<OrderVO> pageQueryWithOrderDetail(OrdersPageQueryDTO ordersPageQueryDTO);
+
+    OrderVO getByIdWithOrderDetail(Long id);
 }
