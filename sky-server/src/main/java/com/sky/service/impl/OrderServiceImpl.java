@@ -175,5 +175,30 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
+    /**
+     * 历史订单查询
+     * @param ordersPageQueryDTO 历史订单查询参数
+     * @return PageResult
+     */
+    @Override
+    public PageResult historyOrders(OrdersPageQueryDTO ordersPageQueryDTO) {
+        //获取到用户id
+        Long userId = BaseContext.getCurrentId();
 
+        ordersPageQueryDTO.setUserId(userId);
+
+        PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
+
+//        //查询订单基本数据
+//        Page<OrderVO> page = orderMapper.pageQuery(ordersPageQueryDTO);
+//        //查询订单明细数据
+//        page.forEach(orderVO -> {
+//            orderVO.setOrderDetailList(orderDetailMapper.getByOrderId(orderVO.getId()));
+//        });
+
+        //使用leftJoin + resultMap
+        Page<OrderVO> page = orderMapper.pageQueryWithOrderDetail(ordersPageQueryDTO);
+
+        return new PageResult(page.getTotal(), page.getResult());
+    }
 }

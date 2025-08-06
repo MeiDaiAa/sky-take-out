@@ -33,4 +33,86 @@
         </set>
         where id = #{id}
     </update>
+    <select id="pageQuery" resultType="com.sky.vo.OrderVO">
+        select * from orders
+        <where>
+            <if test="status != null">and status = #{status}</if>
+            <if test="userId != null">and user_id = #{userId}</if>
+        </where>
+    </select>
+    <resultMap id="pageQuery" type="com.sky.vo.OrderVO">
+        <id property="id" column="o_id"/>
+        <result property="number" column="o_number"/>
+        <result property="status" column="o_status"/>
+        <result property="userId" column="o_user_id"/>
+        <result property="addressBookId" column="o_address_book_id"/>
+        <result property="orderTime" column="o_order_time"/>
+        <result property="checkoutTime" column="o_checkout_time"/>
+        <result property="payMethod" column="o_pay_method"/>
+        <result property="payStatus" column="o_pay_status"/>
+        <result property="amount" column="o_amount"/>
+        <result property="remark" column="o_remark"/>
+        <result property="userName" column="o_user_name"/>
+        <result property="phone" column="o_phone"/>
+        <result property="address" column="o_address"/>
+        <result property="consignee" column="o_consignee"/>
+        <result property="cancelReason" column="o_cancel_reason"/>
+        <result property="rejectionReason" column="o_rejection_reason"/>
+        <result property="cancelTime" column="o_cancel_time"/>
+        <result property="estimatedDeliveryTime" column="o_estimated_delivery_time"/>
+        <result property="deliveryStatus" column="o_delivery_status"/>
+        <result property="deliveryTime" column="o_delivery_time"/>
+        <result property="packAmount" column="o_pack_amount"/>
+        <result property="tablewareNumber" column="o_tableware_number"/>
+        <result property="tablewareStatus" column="o_tableware_status"/>
+        <collection property="orderDetailList" ofType="com.sky.entity.OrderDetail">
+            <id property="id" column="od_id"/>
+            <result property="name" column="od_name"/>
+            <result property="orderId" column="od_order_id"/>
+            <result property="dishId" column="od_dish_id"/>
+            <result property="setmealId" column="od_set_meal_id"/>
+            <result property="dishFlavor" column="od_dish_flavor"/>
+            <result property="number" column="od_number"/>
+            <result property="amount" column="od_amount"/>
+            <result property="image" column="od_image"/>
+        </collection>
+    </resultMap>
+    <select id="pageQueryWithOrderDetail" resultMap="pageQuery">
+        select
+            o.id as o_id,
+            o.number as o_number,
+            o.status as o_status,
+            o.user_id as o_user_id,
+            o.address_book_id as o_address_book_id,
+            o.order_time as o_order_time,
+            o.checkout_time as o_checkout_time,
+            o.pay_method as o_pay_method,
+            o.pay_status as o_pay_status,
+            o.amount as o_amount,
+            o.remark as o_remark,
+            o.user_name as o_user_name,
+            o.phone as o_phone,
+            o.address as o_address,
+            o.consignee as o_consignee,
+            o.cancel_reason as o_cancel_reason,
+            o.rejection_reason as o_rejection_reason,
+            o.cancel_time as o_cancel_time,
+            o.estimated_delivery_time as o_estimated_delivery_time,
+            o.delivery_status as o_delivery_status,
+            o.delivery_time as o_delivery_time,
+            o.pack_amount as o_pack_amount,
+            o.tableware_number as o_tableware_number,
+            o.tableware_status as o_tableware_status,
+            od.id as od_id,
+            od.name as od_name,
+            od.order_id as od_order_id,
+            od.dish_id as od_dish_id,
+            od.setmeal_id as od_set_meal_id,
+            od.dish_flavor as od_dish_flavor,
+            od.number as od_number,
+            od.amount as od_amount,
+            od.image as od_image
+        from orders o
+        left join order_detail od on o.id = od.order_id
+    </select>
 </mapper>
