@@ -212,4 +212,17 @@ public class OrderServiceImpl implements OrderService {
     public OrderVO getOrderDetail(Long id) {
         return orderMapper.getByIdWithOrderDetail(id);
     }
+
+    /**
+     * 取消订单
+     * @param id 订单id
+     */
+    @Override
+    public void cancel(Long id) {
+        Orders orders = new Orders();
+        orders.setId(id);
+        orders.setStatus(Orders.CANCELLED);
+
+        orderMapper.update(orders);
+    }
 }

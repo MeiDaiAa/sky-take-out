@@ -50,5 +50,10 @@ public interface OrderMapper {
      */
     Page<OrderVO> pageQueryWithOrderDetail(OrdersPageQueryDTO ordersPageQueryDTO);
 
+    /**
+     * 根据id查询订单详情
+     * @param id 订单id
+     * @return OrderVO
+     */
     OrderVO getByIdWithOrderDetail(Long id);
 }
