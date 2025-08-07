@@ -320,13 +320,18 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public void confirm(OrdersConfirmDTO ordersConfirmDTO) {
-        Orders orders = orderMapper.getById(ordersConfirmDTO.getId());
-
-        if(orders == null)
-            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
-
-        orders.setStatus(Orders.CONFIRMED);
-        orderMapper.update(orders);
+//        Orders orders = orderMapper.getById(ordersConfirmDTO.getId());
+//
+//        if(orders == null)
+//            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+//
+//        orders.setStatus(Orders.CONFIRMED);
+//        orderMapper.update(orders);
+        orderMapper.update(Orders.builder()
+                                    .id(ordersConfirmDTO.getId())
+                                    .status(Orders.CONFIRMED)
+                                    .build()
+        );
     }
 
     /**
@@ -335,17 +340,24 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public void rejection(OrdersRejectionDTO ordersRejectionDTO) {
-        Orders orders = orderMapper.getById(ordersRejectionDTO.getId());//获取订单
+//        Orders orders = orderMapper.getById(ordersRejectionDTO.getId());//获取订单
+//
+//        if(orders == null)//订单不存在
+//            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+//
+//        orders.setStatus(Orders.CANCELLED);
+//        orders.setRejectionReason(ordersRejectionDTO.getRejectionReason());
+//        orders.setCancelTime(LocalDateTime.now());
+//
+//        orderMapper.update(orders);
 
-        if(orders == null)//订单不存在
-            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
-
-        orders.setStatus(Orders.CANCELLED);
-        orders.setRejectionReason(ordersRejectionDTO.getRejectionReason());
-        orders.setCancelTime(LocalDateTime.now());
-
-        orderMapper.update(orders);
+        orderMapper.update(Orders.builder()
+                .id(ordersRejectionDTO.getId())
+                .status(Orders.CANCELLED)
+                .rejectionReason(ordersRejectionDTO.getRejectionReason())
+                .cancelTime(LocalDateTime.now())
+                .build()
+        );
     }
-
 
 }
