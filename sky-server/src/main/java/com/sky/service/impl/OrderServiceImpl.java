@@ -4,10 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
-import com.sky.dto.OrdersConfirmDTO;
-import com.sky.dto.OrdersPageQueryDTO;
-import com.sky.dto.OrdersPaymentDTO;
-import com.sky.dto.OrdersSubmitDTO;
+import com.sky.dto.*;
 import com.sky.entity.*;
 import com.sky.exception.DeletionNotAllowedException;
 import com.sky.exception.OrderBusinessException;
@@ -226,6 +223,7 @@ public class OrderServiceImpl implements OrderService {
         Orders orders = new Orders();
         orders.setId(id);
         orders.setStatus(Orders.CANCELLED);
+        orders.setCancelTime(LocalDateTime.now());
 
         orderMapper.update(orders);
     }
@@ -301,6 +299,24 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
 
         orders.setStatus(Orders.CONFIRMED);
+        orderMapper.update(orders);
+    }
+
+    /**
+     * 拒单
+     * @param ordersRejectionDTO 拒单参数
+     */
+    @Override
+    public void rejection(OrdersRejectionDTO ordersRejectionDTO) {
+        Orders orders = orderMapper.getById(ordersRejectionDTO.getId());//获取订单
+
+        if(orders == null)//订单不存在
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+
+        orders.setStatus(Orders.CANCELLED);
+        orders.setRejectionReason(ordersRejectionDTO.getRejectionReason());
+        orders.setCancelTime(LocalDateTime.now());
+
         orderMapper.update(orders);
     }
 }
