@@ -98,6 +98,11 @@ public class OrderController {
         return Result.success();
     }
 
+    /**
+     * 取消订单
+     * @param ordersCancelDTO 取消订单参数
+     * @return Result<Void>
+     */
     @PutMapping("/cancel")
     @ApiOperation("取消订单")
     public Result<Void> cancel(@RequestBody OrdersCancelDTO ordersCancelDTO){
@@ -107,4 +112,21 @@ public class OrderController {
 
         return Result.success();
     }
+
+    /**
+     * 派送订单
+     * @param id 订单id
+     * @return Result<Void>
+     */
+    @PutMapping("/delivery/{id}")
+    @ApiOperation("订单派送")
+    public Result<Void> delivery(@PathVariable Long id){
+        log.info("订单派送：{}", id);
+
+        orderService.delivery(id);
+
+        return Result.success();
+    }
+
+
 }

@@ -360,4 +360,22 @@ public class OrderServiceImpl implements OrderService {
         );
     }
 
+    /**
+     * 派送订单
+     * @param id 订单id
+     */
+    @Override
+    public void delivery(Long id) {
+        Orders orders = orderMapper.getById(id);
+        if(orders == null)
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        if(orders.getStatus() == null || !Orders.CONFIRMED.equals(orders.getStatus()))
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+
+        orderMapper.update(Orders.builder()
+                .id(id)
+                .status(Orders.DELIVERY_IN_PROGRESS)
+                .build()
+        );
+    }
 }
