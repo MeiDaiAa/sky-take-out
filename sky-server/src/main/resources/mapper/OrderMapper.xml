@@ -155,14 +155,49 @@
         left join order_detail od on o.id = od.order_id
         where o.id = #{id}
     </select>
-    <select id="conditionSearch" resultType="com.sky.vo.OrderVO">
-        select * from orders
+    <select id="conditionSearch" resultMap="pageQuery">
+        select
+        o.id as o_id,
+        o.number as o_number,
+        o.status as o_status,
+        o.user_id as o_user_id,
+        o.address_book_id as o_address_book_id,
+        o.order_time as o_order_time,
+        o.checkout_time as o_checkout_time,
+        o.pay_method as o_pay_method,
+        o.pay_status as o_pay_status,
+        o.amount as o_amount,
+        o.remark as o_remark,
+        o.user_name as o_user_name,
+        o.phone as o_phone,
+        o.address as o_address,
+        o.consignee as o_consignee,
+        o.cancel_reason as o_cancel_reason,
+        o.rejection_reason as o_rejection_reason,
+        o.cancel_time as o_cancel_time,
+        o.estimated_delivery_time as o_estimated_delivery_time,
+        o.delivery_status as o_delivery_status,
+        o.delivery_time as o_delivery_time,
+        o.pack_amount as o_pack_amount,
+        o.tableware_number as o_tableware_number,
+        o.tableware_status as o_tableware_status,
+        od.id as od_id,
+        od.name as od_name,
+        od.order_id as od_order_id,
+        od.dish_id as od_dish_id,
+        od.setmeal_id as od_set_meal_id,
+        od.dish_flavor as od_dish_flavor,
+        od.number as od_number,
+        od.amount as od_amount,
+        od.image as od_image
+        from orders o
+        left join order_detail od on o.id = od.order_id
         <where>
-            <if test="number != null and number != '' ">and number like concat('%',#{number},'%')</if>
-            <if test="phone != null and phone != '' ">and phone like concat('%',#{phone},'%')</if>
-            <if test="status != null">and status = #{status}</if>
-            <if test="beginTime != null">and order_time &gt;= #{beginTime}</if>
-            <if test="endTime != null">and order_time &lt;= #{endTime}</if>
+            <if test="number != null and number != '' ">and o.number like concat('%',#{number},'%')</if>
+            <if test="phone != null and phone != '' ">and o.phone like concat('%',#{phone},'%')</if>
+            <if test="status != null">and o.status = #{status}</if>
+            <if test="beginTime != null">and o.order_time &gt;= #{beginTime}</if>
+            <if test="endTime != null">and o.order_time &lt;= #{endTime}</if>
         </where>
         order by order_time desc
     </select>
