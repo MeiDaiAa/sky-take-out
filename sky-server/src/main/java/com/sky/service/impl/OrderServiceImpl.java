@@ -246,6 +246,19 @@ public class OrderServiceImpl implements OrderService {
 //        orders.setCancelTime(LocalDateTime.now());
 //        orders.setCancelReason(ordersCancelDTO.getCancelReason());
 
+        Orders orders = orderMapper.getById(ordersCancelDTO.getId());
+        if(orders == null)
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        if(orders.getStatus() == null ||
+                (
+                        !Orders.PENDING_PAYMENT.equals(orders.getStatus())
+                        && !Orders.TO_BE_CONFIRMED.equals(orders.getStatus())
+                        && !Orders.CONFIRMED.equals(orders.getStatus())
+                        && !Orders.DELIVERY_IN_PROGRESS.equals(orders.getStatus())
+                )
+        )
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+
         orderMapper.update(Orders.builder()
                                     .id(ordersCancelDTO.getId())
                                     .status(Orders.CANCELLED)
@@ -327,6 +340,13 @@ public class OrderServiceImpl implements OrderService {
 //
 //        orders.setStatus(Orders.CONFIRMED);
 //        orderMapper.update(orders);
+        Orders orders = orderMapper.getById(ordersConfirmDTO.getId());
+        if(orders == null)
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        if(orders.getStatus() == null || !Orders.TO_BE_CONFIRMED.equals(orders.getStatus()))
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+
+
         orderMapper.update(Orders.builder()
                                     .id(ordersConfirmDTO.getId())
                                     .status(Orders.CONFIRMED)
@@ -350,6 +370,12 @@ public class OrderServiceImpl implements OrderService {
 //        orders.setCancelTime(LocalDateTime.now());
 //
 //        orderMapper.update(orders);
+
+        Orders orders = orderMapper.getById(ordersRejectionDTO.getId());
+        if(orders == null)
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        if(orders.getStatus() == null || !Orders.TO_BE_CONFIRMED.equals(orders.getStatus()))
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
 
         orderMapper.update(Orders.builder()
                 .id(ordersRejectionDTO.getId())
