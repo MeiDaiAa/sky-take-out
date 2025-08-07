@@ -221,12 +221,18 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public void cancel(Long id) {
-        Orders orders = new Orders();
-        orders.setId(id);
-        orders.setStatus(Orders.CANCELLED);
-        orders.setCancelTime(LocalDateTime.now());
+//        Orders orders = new Orders();
+//        orders.setId(id);
+//        orders.setStatus(Orders.CANCELLED);
+//        orders.setCancelTime(LocalDateTime.now());
 
-        orderMapper.update(orders);
+        orderMapper.update(Orders.builder()
+                                    .id(id)
+                                    .status(Orders.CANCELLED)
+                                    .cancelTime(LocalDateTime.now())
+                                    .cancelReason("用户取消")
+                                    .build()
+        );
     }
 
     /**
