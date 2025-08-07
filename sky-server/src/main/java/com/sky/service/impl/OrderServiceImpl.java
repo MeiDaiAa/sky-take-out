@@ -21,6 +21,7 @@ import com.sky.vo.OrderVO;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -229,6 +230,26 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
+     * 取消订单（商家）
+     * @param ordersCancelDTO 取消订单参数
+     */
+    @Override
+    public void cancel(OrdersCancelDTO ordersCancelDTO) {
+//        Orders orders = orderMapper.getById(ordersCancelDTO.getId());
+//        orders.setStatus(Orders.CANCELLED);
+//        orders.setCancelTime(LocalDateTime.now());
+//        orders.setCancelReason(ordersCancelDTO.getCancelReason());
+
+        orderMapper.update(Orders.builder()
+                                    .id(ordersCancelDTO.getId())
+                                    .status(Orders.CANCELLED)
+                                    .cancelReason(ordersCancelDTO.getCancelReason())
+                                    .cancelTime(LocalDateTime.now())
+                                    .build()
+        );
+    }
+
+    /**
      * 再来一单
      * @param id 订单id
      */
@@ -319,4 +340,6 @@ public class OrderServiceImpl implements OrderService {
 
         orderMapper.update(orders);
     }
+
+
 }
