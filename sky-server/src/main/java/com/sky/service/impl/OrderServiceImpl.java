@@ -4,10 +4,12 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
+import com.sky.dto.OrdersConfirmDTO;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.entity.*;
+import com.sky.exception.DeletionNotAllowedException;
 import com.sky.exception.OrderBusinessException;
 import com.sky.exception.ShoppingCartBusinessException;
 import com.sky.mapper.*;
@@ -285,5 +287,20 @@ public class OrderServiceImpl implements OrderService {
         orderStatisticsVO.setDeliveryInProgress(orderMapper.countStatus(Orders.DELIVERY_IN_PROGRESS));
 
         return orderStatisticsVO;
+    }
+
+    /**
+     * 确认订单
+     * @param ordersConfirmDTO 订单确认参数
+     */
+    @Override
+    public void confirm(OrdersConfirmDTO ordersConfirmDTO) {
+        Orders orders = orderMapper.getById(ordersConfirmDTO.getId());
+
+        if(orders == null)
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+
+        orders.setStatus(Orders.CONFIRMED);
+        orderMapper.update(orders);
     }
 }
