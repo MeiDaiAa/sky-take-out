@@ -28,5 +28,8 @@ public class MessageConstant {
 
     public static final String NO_ITEMS_TO_DELETE = "请选择删除对象";
     public static final String SHOP_STATUS_ERROR = "营业状态异常";
+    public static final String ADDRESS_TOO_LONG = "当前地址长度过长";
+    public static final String GET_LOCATION_FAIL = "地址信息错误";
+    public static final String DELIVERY_OUT_OF_RANGE = "店家距您过远，请选择其他店家";
 
 }

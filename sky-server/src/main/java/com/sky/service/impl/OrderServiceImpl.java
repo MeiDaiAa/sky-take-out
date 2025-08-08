@@ -1,5 +1,9 @@
 package com.sky.service.impl;
 
+import com.alibaba.druid.util.HttpClientUtils;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.aliyun.oss.common.utils.HttpUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
@@ -10,15 +14,21 @@ import com.sky.exception.DeletionNotAllowedException;
 import com.sky.exception.OrderBusinessException;
 import com.sky.exception.ShoppingCartBusinessException;
 import com.sky.mapper.*;
+import com.sky.properties.BaiDuMapProperties;
 import com.sky.properties.WeChatProperties;
 import com.sky.result.PageResult;
 import com.sky.service.OrderService;
+import com.sky.utils.DistanceUtil;
+import com.sky.utils.HttpClientUtil;
 import com.sky.utils.WeChatPayUtil;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -28,12 +38,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
 @Service
+@Slf4j
 public class OrderServiceImpl implements OrderService {
+    private static final String BAIDU_URL = "https://api.map.baidu.com/geocoding/v3/";
+
     @Autowired
     private AddressBookMapper addressBookMapper;
     @Autowired
@@ -45,9 +60,7 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderDetailMapper orderDetailMapper;
     @Autowired
-    private WeChatPayUtil weChatPayUtil;
-    @Autowired
-    private WeChatProperties weChatProperties;
+    private BaiDuMapProperties baiDuMapProperties;
 
 
     /**
@@ -64,6 +77,35 @@ public class OrderServiceImpl implements OrderService {
         AddressBook addressBook = addressBookMapper.getById(ordersSubmitDTO.getAddressBookId());
         if(addressBook ==null)//用户地址为空
             throw new OrderBusinessException(MessageConstant.ADDRESS_BOOK_IS_NULL);
+
+        //获取当前用户地址数据
+        StringBuilder addressSb = new StringBuilder();
+        addressSb.append(addressBook.getProvinceName())
+                .append(addressBook.getCityName())
+                .append(addressBook.getDistrictName())
+                .append(addressBook.getDetail());
+        String address = addressSb.toString();
+        if(address.length()>64)
+            throw new OrderBusinessException(MessageConstant.ADDRESS_TOO_LONG);
+        //通过httpClient调用百度地图接口，查询用户的经纬值坐标
+
+        Map<String, String> map = new HashMap<>();//参数准备
+        map.put("ak", baiDuMapProperties.getAk());
+        map.put("output", baiDuMapProperties.getOutput());
+        map.put("address", address);
+
+        String JsonString = HttpClientUtil.doGet(BAIDU_URL, map);//发送httpClient请求，获取返回结果
+        JSONObject jsonObject = JSON.parseObject(JsonString);
+        if(jsonObject.getInteger("status") != 0)//获取经纬度失败
+            throw new OrderBusinessException(MessageConstant.GET_LOCATION_FAIL);
+        //查看用户距离店家的距离
+        JSONObject object = jsonObject.getObject("result", JSONObject.class).getObject("location", JSONObject.class);
+        double haversine = DistanceUtil.haversine(object.getFloat("lat"), object.getFloat("lng"),
+                baiDuMapProperties.getShopLatitude(), baiDuMapProperties.getShopLongitude());
+        log.info("两地距离为：" + haversine);
+        if(haversine > 5)//距离过远
+            throw new OrderBusinessException(MessageConstant.DELIVERY_OUT_OF_RANGE);
+
 
         List<ShoppingCart> shoppingCartList = shoppingCartMapper.getByUserId(userId);
         if(shoppingCartList == null || shoppingCartList.isEmpty())//购物车为空
