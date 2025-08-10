@@ -18,6 +18,7 @@ import com.sky.properties.BaiDuMapProperties;
 import com.sky.properties.WeChatProperties;
 import com.sky.result.PageResult;
 import com.sky.service.OrderService;
+import com.sky.service.WebSocketServer;
 import com.sky.utils.DistanceUtil;
 import com.sky.utils.HttpClientUtil;
 import com.sky.utils.WeChatPayUtil;
@@ -61,6 +62,8 @@ public class OrderServiceImpl implements OrderService {
     private OrderDetailMapper orderDetailMapper;
     @Autowired
     private BaiDuMapProperties baiDuMapProperties;
+    @Autowired
+    private WebSocketServer webSocketServer;
 
 
     /**
@@ -187,7 +190,16 @@ public class OrderServiceImpl implements OrderService {
         String nonceStr = RandomStringUtils.randomNumeric(32);
         String packageSign = "temp";
 
-        paySuccess(ordersPaymentDTO.getOrderNumber());
+        paySuccess(ordersPaymentDTO.getOrderNumber());//修改订单状态为支付成功
+        //通知店家订单完成
+        Map<String, Object> map = new HashMap<>();
+        map.put("type", 1);
+        Orders orders = orderMapper.getByNumber(ordersPaymentDTO.getOrderNumber());
+        if(orders ==  null)
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        map.put("orderId", orders.getId());
+        map.put("content", "订单号：" + ordersPaymentDTO.getOrderNumber());
+        webSocketServer.sendToAllClient(JSON.toJSONString(map));
 
         return OrderPaymentVO.builder()
                 .nonceStr(nonceStr)
