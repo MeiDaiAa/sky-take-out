@@ -90,4 +90,13 @@ public interface OrderMapper {
      */
     @Select("select * from orders where status = #{status} and order_time < #{targetTime}")
     List<Orders> getByStatusAndOrderTimeLT(Integer status, LocalDateTime targetTime);
+
+    /**
+     * 统计指定时间区间内的营业额数据
+     * @param start 开始时间
+     * @param last 结束时间
+     * @param status 订单状态
+     * @return  Integer
+     */
+    Integer getByDatesOrStatus(LocalDateTime start, LocalDateTime last, Integer status);
 }
