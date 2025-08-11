@@ -1,22 +1,28 @@
 package com.sky.service.impl;
 
+import com.sky.dto.GoodsSalesDTO;
 import com.sky.entity.Orders;
+import com.sky.mapper.OrderDetailMapper;
 import com.sky.mapper.OrderMapper;
 import com.sky.mapper.ReportMapper;
 import com.sky.mapper.UserMapper;
 import com.sky.service.ReportService;
 import com.sky.vo.OrderReportVO;
+import com.sky.vo.SalesTop10ReportVO;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -27,6 +33,8 @@ public class ReportServiceImpl implements ReportService {
     private UserMapper userMapper;
     @Autowired
     private OrderMapper orderMapper;
+    @Autowired
+    private OrderDetailMapper orderDetailMapper;
 
     /**
      * 营业额统计
@@ -36,11 +44,7 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public TurnoverReportVO turnoverStatistics(LocalDate begin, LocalDate end) {
-        List<LocalDate> dateList = new ArrayList<>();
-        while(begin.isBefore(end.plusDays(1))){
-            dateList.add(begin);
-            begin = begin.plusDays(1);
-        }
+        List<LocalDate> dateList = getDateList(begin, end);
 
         List<Double> turnoverList = new ArrayList<>();
         dateList.forEach(date -> {
@@ -66,11 +70,7 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public UserReportVO userStatistics(LocalDate begin, LocalDate end) {
-        List<LocalDate> dateList = new ArrayList<>();
-        while(begin.isBefore(end.plusDays(1))){
-            dateList.add(begin);
-            begin = begin.plusDays(1);
-        }
+        List<LocalDate> dateList = getDateList(begin, end);
 
         List<Integer> totalUserList = new ArrayList<>();
         List<Integer> newUserList = new ArrayList<>();
@@ -109,11 +109,7 @@ public class ReportServiceImpl implements ReportService {
      */
     @Override
     public OrderReportVO orderStatistics(LocalDate begin, LocalDate end) {
-        List<LocalDate> dateList = new ArrayList<>();
-        while(begin.isBefore(end.plusDays(1))){
-            dateList.add(begin);
-            begin = begin.plusDays(1);
-        }
+        List<LocalDate> dateList = getDateList(begin, end);
 
         List<Integer> orderCountList = new ArrayList<>();
         List<Integer> validOrderCountList = new ArrayList<>();
@@ -138,6 +134,40 @@ public class ReportServiceImpl implements ReportService {
                 .totalOrderCount(totalOrderCount)
                 .validOrderCount(validOrderCount)
                 .orderCompletionRate(validOrderCount.doubleValue() / totalOrderCount)
+                .build();
+    }
+
+    /**
+     * 计算两个时间段内的所有日期
+     * @param begin 时间段开始时间
+     * @param end 时间段结束时间
+     * @return List<LocalDate>
+     */
+    private List<LocalDate> getDateList(LocalDate begin, LocalDate end) {
+        List<LocalDate> dateList = new ArrayList<>();
+        while(begin.isBefore(end.plusDays(1))){
+            dateList.add(begin);
+            begin = begin.plusDays(1);
+        }
+        return dateList;
+    }
+
+
+    /**
+     * 查询销量排名top10
+     * @param begin 统计的开始时间
+     * @param end 统计的结束时间
+     * @return SalesTop10ReportVO
+     */
+    @Override
+    public SalesTop10ReportVO top10(LocalDate begin, LocalDate end) {
+        List<GoodsSalesDTO> goodsSalesDTOlist = orderDetailMapper
+                .getDishesSalesTop10ByDates(
+                        LocalDateTime.of(begin, LocalTime.MIN), LocalDateTime.of(end, LocalTime.MAX), Orders.COMPLETED);
+
+        return SalesTop10ReportVO.builder()
+                .nameList(goodsSalesDTOlist.stream().map(GoodsSalesDTO::getName).collect(Collectors.joining(",")))
+                .numberList(goodsSalesDTOlist.stream().map(GoodsSalesDTO::getNumber).map(Object::toString).collect(Collectors.joining(",")))
                 .build();
     }
 }
