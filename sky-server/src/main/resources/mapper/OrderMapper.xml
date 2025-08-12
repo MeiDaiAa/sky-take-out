@@ -202,7 +202,11 @@
         </where>
         order by order_time desc
     </select>
-    <select id="getByDatesOrStatus" resultType="java.lang.Integer">
+     <select id="getTurnoverByDates" resultType="java.lang.Double">
+        select sum(amount) from orders
+        where order_time between #{start} and #{last} and status = #{status}
+    </select>
+    <select id="getCountByDates" resultType="java.lang.Integer">
         select count(1) from orders
         <where>
             <if test="start != null">and order_time &gt;= #{start}</if>

@@ -4,18 +4,15 @@ import com.sky.dto.GoodsSalesDTO;
 import com.sky.entity.Orders;
 import com.sky.mapper.OrderDetailMapper;
 import com.sky.mapper.OrderMapper;
-import com.sky.mapper.ReportMapper;
 import com.sky.mapper.UserMapper;
 import com.sky.service.ReportService;
 import com.sky.vo.OrderReportVO;
 import com.sky.vo.SalesTop10ReportVO;
 import com.sky.vo.TurnoverReportVO;
 import com.sky.vo.UserReportVO;
-import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,8 +24,6 @@ import java.util.stream.Collectors;
 @Service
 public class ReportServiceImpl implements ReportService {
 
-    @Autowired
-    private ReportMapper reportMapper;
     @Autowired
     private UserMapper userMapper;
     @Autowired
@@ -52,7 +47,7 @@ public class ReportServiceImpl implements ReportService {
             LocalDateTime last = LocalDateTime.of(date, LocalTime.MAX);
 
 
-            Double turnover = reportMapper.getTurnoverByDates(start, last, Orders.COMPLETED);
+            Double turnover = orderMapper.getTurnoverByDates(start, last, Orders.COMPLETED);
             turnoverList.add(turnover == null ? 0.0 : turnover);
         });
 
@@ -117,8 +112,8 @@ public class ReportServiceImpl implements ReportService {
             LocalDateTime start = LocalDateTime.of(date, LocalTime.MIN);
             LocalDateTime last = LocalDateTime.of(date, LocalTime.MAX);
 
-            Integer orderCount = orderMapper.getByDatesOrStatus(start, last, null);//每日订单数
-            Integer validOrderCount = orderMapper.getByDatesOrStatus(start, last, Orders.COMPLETED);//每日有效订单数
+            Integer orderCount = orderMapper.getCountByDates(start, last, null);//每日订单数
+            Integer validOrderCount = orderMapper.getCountByDates(start, last, Orders.COMPLETED);//每日有效订单数
 
             orderCountList.add(orderCount == null ? 0 : orderCount);
             validOrderCountList.add(validOrderCount == null ? 0 : validOrderCount);
